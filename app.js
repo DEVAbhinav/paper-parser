@@ -62,10 +62,11 @@ app.use(function(err, req, res, next) {
 
 
 app.get("/",function(req,res){
-  //var url = req.body.url;
   var a=[ ];
+  var base  = req.query.base;
+  console.log("base value is " + base);
   var url = "http://m.thehindu.com/opinion/editorial/"; 
-  request(url,function(error, response, html){
+  request(url,function(error, response, html) {
     if(!error){
       var $ = cheerio.load(html);
       //console.log(html);
@@ -75,22 +76,25 @@ app.get("/",function(req,res){
         a[i] = $(this).attr('href');});
       
 
-  request(a[0], function(err, response, html){
-    if(!err){
-      console.log(a[0] +" This is the url to which request is made!!");
-      var $ = cheerio.load(html);
-      var text = $('.hinduNewsBody').text();
-      res.send(text);
-    }
-    
-  })
+      request(a[base], function(err, response, html){
+        if(!err){
+          console.log(a[base] +" This is the url to which request is made!!");
+          var $ = cheerio.load(html);
+          var text = $('.hinduNewsBody').text();
+          // Formating the result to be sent. 
+          // Its an object containing 3 keys. 
+          // 1. heading   2. body   3. image.  
+          // Image and Heading are to be implemeted later on.
 
-      //res.send(a);
-
+          var article = { 'body' : text}
+          res.send(article);
+          console.log(article);
+        }
+      })
     }
-  })
+  });
 })
 
 module.exports = app;
 app.listen('8080');
-console.log("servar is listening at 8080");
+console.log("server is listening at 8080");
