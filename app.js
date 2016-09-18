@@ -63,8 +63,8 @@ app.use(function(err, req, res, next) {
 
 app.get("/",function(req,res){
   var a=[ ];
-  var base  = req.query.base;
-  console.log("base value is " + base);
+  var base  = req.query.base||0;
+  console.log("request made");
   var url = "http://m.thehindu.com/opinion/editorial/"; 
   request(url,function(error, response, html) {
     if(!error){
